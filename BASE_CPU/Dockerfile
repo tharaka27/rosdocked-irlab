@@ -6,45 +6,46 @@
 ################################################################################
 
 # Base image
-FROM osrf/ros:noetic-desktop-full
+FROM osrf/ros:humble-desktop
+
 
 ################################################################################
-
 # Arguments
-ENV ROS_DISTRO=noetic
-ARG USER=ros
-ARG uid
-ARG home
-ARG workspace
-ARG shell
+ENV ROS_DISTRO=humble
+ENV workspace=/home/ros
+ARG user=ros
+###############################################################################
 
-################################################################################
 
-# add ros user to container and make sudoer
-RUN useradd -m -s /bin/bash -G video,plugdev ${USER} && \
-echo "${USER} ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${USER}" && \
-chmod 0440 "/etc/sudoers.d/${USER}"
+# Install git, supervisor, VNC, & X11 packages
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y \
+      bash \
+      icewm \
+      git \
+      net-tools \
+      novnc \
+      supervisor \
+      x11vnc \
+      xvfb \
+      bash
 
-# Switch to user
-USER "${USER}"
+# Setup demo environment variables
+ENV HOME=/root \
+    DEBIAN_FRONTEND=noninteractive \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DISPLAY=:0.0 \
+    DISPLAY_WIDTH=1024 \
+    DISPLAY_HEIGHT=768 \
+    RUN_XTERM=no \
+    RUN_ICEWM=no
 
-################################################################################
+COPY . /app
 
-# install git
-RUN sudo apt-get update && \
-    sudo apt-get install -y wget apt-utils git
+RUN chmod +x /app/entrypoint.sh
 
-################################################################################
-
-# Only required on BASE CPU
-RUN cd /opt && sudo git clone  https://github.com/icclab/gpd && cd gpd && \
-   sudo mkdir build && cd build && sudo cmake .. && sudo make -j8 && sudo make install
-
-################################################################################
-
-# This is required for sharing Xauthority
-ENV QT_X11_NO_MITSHM=1
-ENV CATKIN_TOPLEVEL_WS="${workspace}/devel"
-
-# Switch to the workspace
-WORKDIR ${workspace}
+CMD ["/app/entrypoint.sh"]
+EXPOSE 8080

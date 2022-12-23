@@ -1,16 +1,18 @@
 version: '3'
 services:
   ros:
-    image: robopaas/rosdocked-humble-robopaas-cpu:latest
+    image: robopaas/rosdocked-humble-robopaas-base-cpu:latest
     hostname: rosdocked
     environment:
       - ROS_HOSTNAME=rosdocked
       - DISPLAY=novnc:0.0
     depends_on:
       - novnc
-    command: roscore
+    command: rviz2
     volumes:
       - $PWD:/host
+    networks:
+      - x11
 
   novnc:  
     image: robopaas/novnc:labs
@@ -21,5 +23,9 @@ services:
       - DISPLAY_HEIGHT= 1080
     shm_size: 2gb
     ports:
-      - "80:8080"
+      - "8080:8080"
+    networks:
+      - x11
+networks:
+  x11:
 
