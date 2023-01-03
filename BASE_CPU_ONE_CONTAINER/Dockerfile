@@ -26,6 +26,13 @@ ENV HOME=/root \
     DISPLAY_WIDTH=1024 \
     DISPLAY_HEIGHT=768 
 
+##############################################################################
+# Setup locale properly
+RUN apt update && sudo apt install locales \
+    && locale-gen en_US en_US.UTF-8 \
+    && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
+
 # Install git, supervisor, VNC, & X11 packages
 RUN set -ex; \
     apt-get update; \
@@ -40,7 +47,8 @@ RUN set -ex; \
       fluxbox \
       xterm \
       xvfb \
-      socat
+      socat \
+      ubuntu-mate-desktop
 
 # Clone noVNC from github
 RUN git clone https://github.com/kanaka/noVNC.git /root/noVNC \
@@ -59,12 +67,3 @@ RUN sed -i -- "s/ps -p/ps -o pid | grep/g" /root/noVNC/utils/launch.sh
 EXPOSE 8080
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-
-#ENV QT_X11_NO_MITSHM=1
-#COPY . /app
-
-#RUN chmod +x /app/entrypoint.sh
-
-#CMD ["/app/entrypoint.sh"]
-#EXPOSE 8080
