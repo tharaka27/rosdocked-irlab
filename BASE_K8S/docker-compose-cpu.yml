@@ -1,0 +1,13 @@
+version: '3'
+services:
+  ros:
+    image: robopaas/rosdocked-humble-test-base-k8s:latest
+    hostname: rosdocked
+    environment:
+      - ROS_HOSTNAME=rosdocked
+      - DISPLAY_WIDTH=1600
+      - DISPLAY_HEIGHT=968
+    ports:
+      - "8080:8080"
+    
+

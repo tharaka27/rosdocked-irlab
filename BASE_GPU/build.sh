@@ -7,7 +7,7 @@
 # Date:         2021-11-08
 ################################################################################
 
-export IMAGE_NAME=robopaas/rosdocked-noetic-base-gpu:latest
+export IMAGE_NAME=robopaas/rosdocked-humble-base-gpu-test:latest
 
 # Get this script's path
 pushd `dirname $0` > /dev/null

@@ -6,7 +6,7 @@
 ################################################################################
 
 # Base image
-FROM osrf/ros:humble-desktop
+FROM ubuntu:22.04
 
 
 ################################################################################
@@ -66,4 +66,4 @@ RUN sed -i -- "s/ps -p/ps -o pid | grep/g" /root/noVNC/utils/launch.sh
 
 EXPOSE 8080
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
